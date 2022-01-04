@@ -1,5 +1,5 @@
 const res = require("express/lib/response");
-const pool = require("../../config/database");
+const pool = require("../../database");
 
 module.exports = {
     create : (data, callback) =>{
@@ -98,6 +98,28 @@ module.exports = {
                 return callback(null, results[0]);
             }
         )
+    },
+
+    createUserProfile : (data, callback) =>{
+        pool.query(
+            `insert into userprofile(name, address, email, number, gender, date_of_birth, profile_image)
+                    values(?,?,?,?,?,?,?)`,
+                    [
+                        data.name,
+                        data.address,
+                        data.email,
+                        data.number,
+                        data.gender,
+                        data.date_of_birth,
+                        dob.profile_image
+                    ],
+                    (error, results, fields) =>{
+                        if(error){
+                           return callback(error);
+                        }
+                        return callback(null, results);
+                    }
+        );
     },
 
 };

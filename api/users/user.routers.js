@@ -4,12 +4,14 @@ const {
     getAllUsers, 
     getUserbyid, 
     updateuser,
-    login
+    login,
+    createUserprofile
 } = require("./user.controller");
 
 const multer = require("multer")
 const path = require("path");
 const req = require("express/lib/request");
+
 
 const storage = multer.diskStorage({
     destination : "./upload/images",
@@ -27,10 +29,11 @@ const router = require("express").Router();
 const { validate }= require("../../auth/tokenvalidation");
 
 router.post("/api/create", validate, createUser);
+router.post("/api/updateuser", validate, updateuser);
 router.post("/api/deleteuser", validate, deleteuser);
 router.post("/api/getallusers", validate, getAllUsers);
 router.post("/api/getusersbyid",validate, getUserbyid);
-router.post("/api/updateuser", validate, updateuser);
+router.post("/api/createprofile", createUserprofile);
 
 router.post("/api/imgupload", validate,  upload.single('profile'), (req, res)=>{
     res.json({

@@ -1,8 +1,17 @@
-const {create, getUsers, getUsersbyid, updateusers, deleteUsersbyid, getuserbyemail} = require("./user.services");
+const {
+    create, 
+    getUsers, 
+    getUsersbyid, 
+    updateusers, 
+    deleteUsersbyid, 
+    getuserbyemail,
+    createUserProfile
+} = require("./user.services");
 
 const { genSaltSync, hashSync ,compareSync} = require("bcrypt");
 
 const {sign} = require("jsonwebtoken")
+var CryptoJS = require("crypto-js");
 
 module.exports = {
     createUser : (req, res) =>{
@@ -136,6 +145,9 @@ module.exports = {
                 const jsontoken = sign({result : results}, process.env.JSON_PASS, {
                     expiresIn : "1h"
                 });
+                // var ciphertext = CryptoJS.AES.encrypt(jsontoken, process.env.SCRT_kEY).toString();
+                // console.log(ciphertext)
+
                 return res.json({
                     success : 1,
                     message : "login sucessfully",
@@ -148,5 +160,22 @@ module.exports = {
                 });
             }
         });
-    }
+    },
+
+    createUserprofile : (req, res) =>{
+        const body = req.body;
+        createUserProfile(body, (err, results) => {
+            if(err){
+                console.log(err);
+                return res.status(500).json({
+                    success : 0,
+                    message : "Database connection error"
+                });
+            }
+            return res.status(200).json({
+                success : 1,
+                data : results
+            });
+        });
+    },
 }
