@@ -141,6 +141,7 @@ module.exports = {
             }
 
             if(!results){
+                console.log("Invalid email or password")
                 return res.json({
                     success : 0,
                     message : "invalid email or password"
@@ -347,21 +348,22 @@ module.exports = {
             const body = req.body;     
             var today = new Date();
             const tomorrow = new Date(today)
+            var n = 200
+            let count = 0
            
             if(body.package_type == "weekends"){
-                var n = 200
-                let count = 0
-
                 for(let i = 0; i<= n; i++){
                     tomorrow.setDate(tomorrow.getDate() + 1)
+                    var year = tomorrow.getUTCFullYear();
                     var month = tomorrow.getUTCMonth() + 1;
                     var day = tomorrow.getUTCDate();
-                    var year = tomorrow.getUTCFullYear();
                     newdate = year + "-" + month + "-" + day;
 
-                    if(count != body.ride_count){
-                        count++
+                    if(count == body.ride_count){
+                        break;
+                    } else{
                         if(tomorrow.getUTCDay() == 6 || tomorrow.getUTCDay() == 0){
+                            count++
                             body.status = newdate
                             addSubscription(body, (err, results) => {
                                 if(err){
@@ -373,8 +375,6 @@ module.exports = {
                                 }
                             });
                         }
-                    } else{
-                        break;
                     }
                 }
                 return res.status(200).json({
@@ -383,15 +383,11 @@ module.exports = {
                 });
             }  
             else if (body.package_type == "weekdays"){
-
-                var n = 150
-                let count = 0
-    
                 for(let i = 0; i<= n; i++){
                     tomorrow.setDate(tomorrow.getDate() + 1)
+                    var year = tomorrow.getUTCFullYear();
                     var month = tomorrow.getUTCMonth() + 1;
                     var day = tomorrow.getUTCDate();
-                    var year = tomorrow.getUTCFullYear();
                     newdate = year + "-" + month + "-" + day;
                 
                     if(count != body.ride_count){

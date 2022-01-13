@@ -49,8 +49,8 @@ router.post("/api/fetchwallet", validate, fetchwalletbalacebyid);
 router.post("/api/fetchtransaction", validate, fetchtransactionbyid);
 router.post("/api/addtransaction", validate, addTransaction)
 router.post("/api/getTransaction", validate,  getTransactionUsingMon)
-router.post("/api/addUserSubscription", addUserSubscription)
-router.post("/api/updateridestatus", updateRideStatus)
+router.post("/api/addUserSubscription",validate, addUserSubscription)
+router.post("/api/updateridestatus",validate, updateRideStatus)
 
 router.post("/api/imgupload", validate,  upload.single('profile'), (req, res)=>{
     res.json({
