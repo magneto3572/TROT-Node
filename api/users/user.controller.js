@@ -5,7 +5,15 @@ const {
     updateusers, 
     deleteUsersbyid, 
     getuserbyemail,
-    createUserProfile
+    createUserProfile,
+    getUserProfilebyId,
+    updateUserProfilebyId,
+    fetchWalletBalance,
+    fetchTransactionHistory,
+    addTransactionDetails,
+    gettimestamp,
+    addSubscription,
+    updateridestatus
 } = require("./user.services");
 
 const { genSaltSync, hashSync ,compareSync} = require("bcrypt");
@@ -174,8 +182,284 @@ module.exports = {
             }
             return res.status(200).json({
                 success : 1,
+                message : "User Added"
+            });
+        });
+    },
+
+    getUserProfbyid : (req, res) =>{
+        const body = req.body;
+        getUserProfilebyId(body.id, (err, results)=>{
+            if(err){
+                console.log(err);
+                return res.status(500).json({
+                    success : 0,
+                    message : "Database connection error"
+                });
+            }
+
+            if(!results){
+                return res.json({
+                    success : 0,
+                    message : "Record not found"
+                });
+            }
+            return res.status(200).json({
+                success : 1,
                 data : results
             });
         });
     },
+
+    updateuserbyid : (req, res) =>{
+        const body = req.body
+        updateUserProfilebyId(body, (err, results)=>{
+            if(err){
+                console.log(err);
+                return res.status(500).json({
+                    success : 0,
+                    message : "Database connection error"
+                });
+            }
+            if(!results){
+                return res.json({
+                    success : 0,
+                    message : "Failed to  update user"
+                });
+            }
+            return res.status(200).json({
+                success : 1,
+                message : "User updated sucessfully"
+            });
+        });
+    },
+
+    fetchwalletbalacebyid : (req, res) =>{
+        const body = req.body
+        fetchWalletBalance(body, (err, results)=>{
+            if(err){
+                console.log(err);
+                return res.status(500).json({
+                    success : 0,
+                    message : "Database connection error"
+                });
+            }
+            if(!results){
+                return res.json({
+                    success : 0,
+                    message : "Failed to get user"
+                });
+            }
+            return res.status(200).json({
+                success : 1,
+                data : results
+            });
+        });
+    },
+
+    fetchtransactionbyid : (req, res) =>{
+        const body = req.body
+        fetchTransactionHistory(body, (err, results)=>{
+            if(err){
+                console.log(err);
+                return res.status(500).json({
+                    success : 0,
+                    message : "Database connection error"
+                });
+            }
+            if(!results){
+                return res.json({
+                    success : 0,
+                    message : "Failed to get user"
+                });
+            }
+            return res.status(200).json({
+                success : 1,
+                data : results
+            });
+        });
+    },
+
+    addTransaction : (req, res) =>{
+        const body = req.body
+        addTransactionDetails(body, (err, results)=>{
+            if(err){
+                console.log(err);
+                return res.status(500).json({
+                    success : 0,
+                    message : "Database connection error"
+                });
+            }
+            if(!results){
+                return res.json({
+                    success : 0,
+                    message : "Failed to update"
+                });
+            }
+            return res.status(200).json({
+                success : 1,
+                message : "Transaction status updated"
+            });
+        });
+    },
+
+    getTransactionUsingMon : (req, res) =>{
+        const body = req.body
+        gettimestamp(body, (err, results)=>{
+            if(err){
+                console.log(err);
+                return res.status(500).json({
+                    success : 0,
+                    message : "Database connection error"
+                });
+            }
+            if(!results){
+                return res.json({
+                    success : 0,
+                    message : "Record not found"
+                });
+            }
+          
+            var array = [];
+            for (let i = 0; i < results.length; i++) {
+                const c = results[i].transaction_at
+                var dateObj = new Date(c);
+                var month = dateObj.getUTCMonth() + 1;
+                var day = dateObj.getUTCDate();
+                var year = dateObj.getUTCFullYear();
+                newdate = year + "-" + month + "-" + day;
+              
+                if(month == body.mon){
+                   results[i].transaction_at = newdate
+                   array.push(results[i])
+                } 
+            }
+           
+            return res.status(200).json({
+                success : 1,
+                message : "Success",
+                data : array
+            });
+        });
+    },
+
+    addUserSubscription : async(req, res) => {
+            const body = req.body;     
+            var today = new Date();
+            const tomorrow = new Date(today)
+           
+            if(body.package_type == "weekends"){
+                var n = 200
+                let count = 0
+
+                for(let i = 0; i<= n; i++){
+                    tomorrow.setDate(tomorrow.getDate() + 1)
+                    var month = tomorrow.getUTCMonth() + 1;
+                    var day = tomorrow.getUTCDate();
+                    var year = tomorrow.getUTCFullYear();
+                    newdate = year + "-" + month + "-" + day;
+
+                    if(count != body.ride_count){
+                        count++
+                        if(tomorrow.getUTCDay() == 6 || tomorrow.getUTCDay() == 0){
+                            body.status = newdate
+                            addSubscription(body, (err, results) => {
+                                if(err){
+                                    console.log(err);
+                                    return res.status(500).json({
+                                        success : 0,
+                                        message : "Database connection error"
+                                    });
+                                }
+                            });
+                        }
+                    } else{
+                        break;
+                    }
+                }
+                return res.status(200).json({
+                    success : 1,
+                    message : "Subcriptions Added"
+                });
+            }  
+            else if (body.package_type == "weekdays"){
+
+                var n = 150
+                let count = 0
+    
+                for(let i = 0; i<= n; i++){
+                    tomorrow.setDate(tomorrow.getDate() + 1)
+                    var month = tomorrow.getUTCMonth() + 1;
+                    var day = tomorrow.getUTCDate();
+                    var year = tomorrow.getUTCFullYear();
+                    newdate = year + "-" + month + "-" + day;
+                
+                    if(count != body.ride_count){
+                        if(!(tomorrow.getUTCDay() == 6 || tomorrow.getUTCDay() == 0)){
+                            count ++
+                            body.status = newdate
+
+                            addSubscription(body, (err, results) => {
+                                if(err){
+                                    console.log(err);
+                                    return res.status(500).json({
+                                        success : 0,
+                                        message : "Database connection error"
+                                    });
+                                }
+                            });
+                        }
+                    } else{
+                        break;
+                    }
+                }   
+
+                return res.status(200).json({
+                    success : 1,
+                    message : "Subcriptions Added"
+                });
+            }
+            else{
+                    for (let i = 0; i < body.ride_count; i++) { 
+                        tomorrow.setDate(tomorrow.getDate() + 1)
+                        var month = tomorrow.getUTCMonth() + 1;
+                        var day = tomorrow.getUTCDate();
+                        var year = tomorrow.getUTCFullYear();
+                        newdate = year + "-" + month + "-" + day;
+                        body.status = newdate
+                        
+                        addSubscription(body, (err, results) => {
+                            if(err){
+                                console.log(err);
+                                return res.status(500).json({
+                                    success : 0,
+                                    message : "Database connection error"
+                                });
+                            }
+                        });
+                    }  
+                    return res.status(200).json({
+                    success : 1,
+                        message : "Subcriptions Added"
+                    });
+            }
+    },
+
+    updateRideStatus : (req, res) => {
+        const body = req.body;
+        updateridestatus(body, (err, results) => {
+            if(err){
+                console.log(err);
+                return res.status(500).json({
+                    success : 0,
+                    message : "Database connection error"
+                });
+            }
+
+            return res.status(200).json({
+                success : 1,
+                message : "updated"
+            });
+        });
+    }
 }

@@ -5,7 +5,15 @@ const {
     getUserbyid, 
     updateuser,
     login,
-    createUserprofile
+    createUserprofile,
+    getUserProfbyid,
+    updateuserbyid,
+    fetchwalletbalacebyid,
+    fetchtransactionbyid,
+    addTransaction,
+    getTransactionUsingMon,
+    addUserSubscription,
+    updateRideStatus
 } = require("./user.controller");
 
 const multer = require("multer")
@@ -28,12 +36,21 @@ const upload = multer({
 const router = require("express").Router();
 const { validate }= require("../../auth/tokenvalidation");
 
-router.post("/api/create", validate, createUser);
+router.post("/api/login", login);
+router.post("/api/create", createUser);
 router.post("/api/updateuser", validate, updateuser);
 router.post("/api/deleteuser", validate, deleteuser);
 router.post("/api/getallusers", validate, getAllUsers);
 router.post("/api/getusersbyid",validate, getUserbyid);
-router.post("/api/createprofile", createUserprofile);
+router.post("/api/createprofile",validate, createUserprofile);
+router.post("/api/getuserprofile",validate, getUserProfbyid);
+router.post("/api/updateuserprofile",validate, updateuserbyid);
+router.post("/api/fetchwallet", validate, fetchwalletbalacebyid);
+router.post("/api/fetchtransaction", validate, fetchtransactionbyid);
+router.post("/api/addtransaction", validate, addTransaction)
+router.post("/api/getTransaction", validate,  getTransactionUsingMon)
+router.post("/api/addUserSubscription", addUserSubscription)
+router.post("/api/updateridestatus", updateRideStatus)
 
 router.post("/api/imgupload", validate,  upload.single('profile'), (req, res)=>{
     res.json({
@@ -41,8 +58,5 @@ router.post("/api/imgupload", validate,  upload.single('profile'), (req, res)=>{
         profile_url: req.file.path
     })
 });
-
-router.post("/api/login", login);
-
 
 module.exports = router;
