@@ -155,7 +155,7 @@ module.exports = {
             if(result){
                 results.password = undefined;
                 const jsontoken = sign({result : results}, process.env.JSON_PASS, {
-                    expiresIn : "1h"
+                    expiresIn : "15d"
                 });
                 // var ciphertext = CryptoJS.AES.encrypt(jsontoken, process.env.SCRT_kEY).toString();
                 // console.log(ciphertext)
