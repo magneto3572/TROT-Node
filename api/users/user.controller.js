@@ -53,6 +53,7 @@ module.exports = {
             }
 
             if(!results){
+                console.log(results)
                 return res.json({
                     success : 0,
                     message : "Record not found"
@@ -94,6 +95,7 @@ module.exports = {
                 });
             }
             if(!results){
+                console.log(results)
                 return res.json({
                     success : 0,
                     message : "Failed to  update user"
@@ -117,6 +119,7 @@ module.exports = {
                 });
             }
             if(!results){
+                console.log.results
                 return res.status(500).json({
                     success : 0,
                     message : "Record not found"
@@ -200,6 +203,7 @@ module.exports = {
             }
 
             if(!results){
+                console.log(results)
                 return res.json({
                     success : 0,
                     message : "Record not found"
@@ -223,6 +227,7 @@ module.exports = {
                 });
             }
             if(!results){
+                console.log(results)
                 return res.json({
                     success : 0,
                     message : "Failed to  update user"
@@ -246,6 +251,7 @@ module.exports = {
                 });
             }
             if(!results){
+                console.log(results)
                 return res.json({
                     success : 0,
                     message : "Failed to get user"
@@ -269,6 +275,7 @@ module.exports = {
                 });
             }
             if(!results){
+                console.log(results)
                 return res.json({
                     success : 0,
                     message : "Failed to get user"
@@ -292,6 +299,7 @@ module.exports = {
                 });
             }
             if(!results){
+                console.log(results)
                 return res.json({
                     success : 0,
                     message : "Failed to update"
