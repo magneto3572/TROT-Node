@@ -161,7 +161,7 @@ module.exports = {
                 // var ciphertext = CryptoJS.AES.encrypt(jsontoken, process.env.SCRT_kEY).toString();
                 // console.log(ciphertext)
 
-               console.log(results)
+    
                 return res.json({
                     success : 1,
                     message : "login sucessfully",
